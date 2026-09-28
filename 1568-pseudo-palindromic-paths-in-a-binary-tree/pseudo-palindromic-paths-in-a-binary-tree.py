@@ -1,35 +1,22 @@
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
 class Solution:
     def __init__(self):
         self.result = 0
-        self.arr_path = [0]*10
-    def pseudoPalindromicPaths (self, root: TreeNode | None) -> int:
-        self.path(root)
+
+    def pseudoPalindromicPaths(self, root: TreeNode | None) -> int:
+        self.result = 0  # reset in case the object is reused
+        self.path(root, 0)
         return self.result
-         
-    def path(self, root):
-        if (root == None):
-            return 0
 
-        self.arr_path[root.val] += 1
+    def path(self, root, mask):
+        if root is None:
+            return
 
-        if root.left == None and root.right == None:
-            ## logic for checking the pallindrome 
-            odd_count = 0 
-            for values in self.arr_path:
-                if values % 2 == 1:
-                    odd_count += 1
-                
-            if odd_count <= 1:
+        mask ^= 1 << root.val
+
+        if root.left is None and root.right is None:
+            if mask & (mask - 1) == 0:
                 self.result += 1
-            
-        left = self.path(root.left)
-        right = self.path(root.right)
-        self.arr_path[root.val] -= 1
-        
-        
+            return
+
+        self.path(root.left, mask)
+        self.path(root.right, mask)
